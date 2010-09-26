@@ -18,14 +18,16 @@ public class TCPServer extends Thread {
 
     @Override
     public void run() {
-	try {
-	    ServerSocket welcomeSock = new ServerSocket(4242);
-	    while (true) {
-		Socket connectionSock = welcomeSock.accept();
-		new TCPHandler(connectionSock).start();
-	    }
-	} catch (IOException ex) {
-	    Logger.getLogger(TCPServer.class.getName()).log(Level.SEVERE, null, ex);
-	}
+        try {
+            ServerSocket welcomeSock = new ServerSocket(2048);
+            int i=0;
+            while (true) {
+                System.out.println("listen"+i++);
+                Socket connectionSock = welcomeSock.accept();
+                new TCPHandler(connectionSock).start();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(TCPServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

@@ -4,28 +4,35 @@
  */
 package hackervaillant.util;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author indy
+ * @author judu
  */
 public class UDPServer extends Thread {
 
-    @Override
-    public void run() {
-	try {
-	    ServerSocket welcomeSocket = new ServerSocket(6789);
-	    while (true) {
-		Socket connectionSocket = welcomeSocket.accept();
-		new UDPHandler(connectionSocket).start();
-	    }
-	} catch (IOException ex) {
-	    Logger.getLogger(UDPHandler.class.getName()).log(Level.SEVERE, null, ex);
-	}
-    }
+   @Override
+   public void run() {
+      try {
+         DatagramSocket serverSocket = new DatagramSocket(4096);
+
+         ExecutorService pool = Executors.newFixedThreadPool(50);
+
+         while(true) {
+            UDPHandler handler = new UDPHandler(serverSocket);
+            pool.execute(handler);
+
+         }
+      } catch (SocketException ex) {
+         Logger.getLogger(UDPServer.class.getName()).log(Level.SEVERE, null, ex);
+      }
+
+   }
+
 }
